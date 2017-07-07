@@ -97,7 +97,7 @@ class CreateTSIGKeyCommand(command.ShowOne):
                             required=True)
         parser.add_argument('--secret', help="TSIGKey secret", required=True)
         parser.add_argument('--scope', help="TSIGKey scope", required=True)
-        parser.add_argument('--resource_id', help="TSIGKey resource_id",
+        parser.add_argument('--resource-id', help="TSIGKey resource_id",
                             required=True)
 
         common.add_all_common_options(parser)
