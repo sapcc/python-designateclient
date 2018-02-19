@@ -56,9 +56,18 @@ class ListZonesCommand(command.Lister):
         parser.add_argument('--email', help='Zone Email', required=False)
         parser.add_argument('--type', help='Zone Type',
                             choices=['PRIMARY', 'SECONDARY'],
-                            default=None,
+                            default='PRIMARY',
                             required=False)
         parser.add_argument('--ttl', help='Time To Live (Seconds)',
+                            required=False)
+        parser.add_argument('--expire', help='SOA Expire (Seconds)',
+                            required=False)
+        parser.add_argument('--refresh', help='SOA Refresh (Seconds)',
+                            required=False)
+        parser.add_argument('--retry', help='SOA Retry (Seconds)',
+                            required=False)
+        parser.add_argument('--minimum',
+                            help='Negative Caching TTL (Seconds)',
                             required=False)
         parser.add_argument('--description', help='Description',
                             required=False)
@@ -74,22 +83,34 @@ class ListZonesCommand(command.Lister):
 
         criterion = {}
         if parsed_args.type is not None:
-            criterion['type'] = parsed_args.type
+            criterion["type"] = parsed_args.type
 
         if parsed_args.name is not None:
-            criterion['name'] = parsed_args.name
+            criterion["name"] = parsed_args.name
 
         if parsed_args.ttl is not None:
-            criterion['ttl'] = parsed_args.ttl
+            criterion["ttl"] = parsed_args.ttl
+
+        if parsed_args.expire is not None:
+            criterion["expire"] = parsed_args.expire
+
+        if parsed_args.refresh is not None:
+            criterion["refresh"] = parsed_args.refresh
+
+        if parsed_args.retry is not None:
+            criterion["retry"] = parsed_args.retry
+
+        if parsed_args.minimum is not None:
+            criterion["minimum"] = parsed_args.minimum
 
         if parsed_args.description is not None:
-            criterion['description'] = parsed_args.description
+            criterion["description"] = parsed_args.description
 
         if parsed_args.email is not None:
-            criterion['email'] = parsed_args.email
+            criterion["email"] = parsed_args.email
 
         if parsed_args.status is not None:
-            criterion['status'] = parsed_args.status
+            criterion["status"] = parsed_args.status
 
         data = get_all(client.zones.list, criterion)
 
@@ -134,10 +155,14 @@ class CreateZoneCommand(command.ShowOne):
         parser.add_argument('--type', help='Zone Type',
                             choices=['PRIMARY', 'SECONDARY'],
                             default='PRIMARY')
-        parser.add_argument('--ttl', type=int, help='Time To Live (Seconds)')
-        parser.add_argument('--description', help='Description')
-        parser.add_argument('--masters', help='Zone Masters', nargs='+')
-        parser.add_argument('--attributes', help='Zone Attributes', nargs='+')
+        parser.add_argument('--ttl', type=int, help="Time To Live (Seconds)")
+        parser.add_argument('--expire', type=int, help="SOA Expire (Seconds)")
+        parser.add_argument('--retry', type=int, help="SOA Retry (Seconds)")
+        parser.add_argument('--minimum',
+                            type=int, help="Negative Caching TTL (Seconds)")
+        parser.add_argument('--description', help="Description")
+        parser.add_argument('--masters', help="Zone Masters", nargs='+')
+        parser.add_argument('--attributes', help="Zone Attributes", nargs='+')
 
         common.add_all_common_options(parser)
 
@@ -173,9 +198,15 @@ class CreateZoneCommand(command.ShowOne):
 
             payload['email'] = parsed_args.email
 
-            # TTL is just valid for PRIMARY
+            # Some values are valid for PRIMARY only
             if parsed_args.ttl is not None:
-                payload['ttl'] = parsed_args.ttl
+                payload["ttl"] = parsed_args.ttl
+            if parsed_args.expire is not None:
+                payload["expire"] = parsed_args.expire
+            if parsed_args.retry is not None:
+                payload["retry"] = parsed_args.retry
+            if parsed_args.minimum is not None:
+                payload["minimum"] = parsed_args.minimum
         elif parsed_args.type == 'SECONDARY':
             payload['masters'] = parsed_args.masters
         else:
@@ -197,9 +228,15 @@ class SetZoneCommand(command.ShowOne):
     def get_parser(self, prog_name):
         parser = super().get_parser(prog_name)
 
-        parser.add_argument('id', help='Zone ID')
-        parser.add_argument('--email', help='Zone Email')
-        parser.add_argument('--ttl', type=int, help='Time To Live (Seconds)')
+        parser.add_argument('id', help="Zone ID")
+        parser.add_argument('--email', help="Zone Email")
+        parser.add_argument('--ttl', type=int, help="Time To Live (Seconds)")
+        parser.add_argument('--expire', type=int, help="SOA Expire (Seconds)")
+        parser.add_argument('--refresh',
+                            type=int, help="SOA Refresh (Seconds)")
+        parser.add_argument('--retry', type=int, help="SOA Retry (Seconds)")
+        parser.add_argument('--minimum',
+                            type=int, help="Negative Caching TTL (Seconds)")
         description_group = parser.add_mutually_exclusive_group()
         description_group.add_argument('--description', help='Description')
         description_group.add_argument('--no-description', action='store_true')
@@ -222,6 +259,18 @@ class SetZoneCommand(command.ShowOne):
 
         if parsed_args.ttl:
             data['ttl'] = parsed_args.ttl
+
+        if parsed_args.expire:
+            data['expire'] = parsed_args.expire
+
+        if parsed_args.refresh:
+            data['refresh'] = parsed_args.refresh
+
+        if parsed_args.retry:
+            data['retry'] = parsed_args.retry
+
+        if parsed_args.minimum:
+            data['minimum'] = parsed_args.minimum
 
         if parsed_args.no_description:
             data['description'] = None
