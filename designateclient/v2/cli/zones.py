@@ -669,6 +669,10 @@ class ImportZoneCommand(command.ShowOne):
 
         parser.add_argument('zone_file_path',
                             help='Path to a zone file', type=str)
+        parser.add_argument('--pool_id',
+                            required=False,
+                            help="Pool ID where zone should be scheduled",
+                            type=str)
 
         common.add_all_common_options(parser)
 
@@ -681,7 +685,8 @@ class ImportZoneCommand(command.ShowOne):
         with open(parsed_args.zone_file_path) as f:
             zone_file_contents = f.read()
 
-        data = client.zone_imports.create(zone_file_contents)
+        pool_id = parsed_args.pool_id
+        data = client.zone_imports.create(zone_file_contents, pool_id=pool_id)
         _format_zone_import_record(data)
 
         LOG.info('Zone Import %s was created', data['id'])
