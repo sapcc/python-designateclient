@@ -154,9 +154,12 @@ class ZoneExportsController(V2Controller):
 
 
 class ZoneImportsController(V2Controller):
-    def create(self, zone_file_contents):
+    def create(self, zone_file_contents, pool_id=''):
+        headers = {'Content-Type': 'text/dns'}
+        if pool_id:
+            headers['X-Designate-Pool-ID'] = pool_id
         return self._post('/zones/tasks/imports', data=zone_file_contents,
-                          headers={'Content-Type': 'text/dns'})
+                          headers=headers)
 
     def get_import_record(self, zone_import_id):
         return self._get('/zones/tasks/imports/%s' % zone_import_id)
