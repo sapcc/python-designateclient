@@ -52,26 +52,28 @@ class ListZonesCommand(command.Lister):
     def get_parser(self, prog_name):
         parser = super().get_parser(prog_name)
 
-        parser.add_argument('--name', help='Zone Name', required=False)
-        parser.add_argument('--email', help='Zone Email', required=False)
-        parser.add_argument('--type', help='Zone Type',
-                            choices=['PRIMARY', 'SECONDARY'],
-                            default='PRIMARY',
+        parser.add_argument('--name', help="Zone Name", required=False)
+        parser.add_argument('--email', help="Zone Email", required=False)
+        parser.add_argument('--type', help="Zone Type",
+                            choices=["PRIMARY", "SECONDARY"],
+                            default="PRIMARY",
                             required=False)
-        parser.add_argument('--ttl', help='Time To Live (Seconds)',
+        parser.add_argument('--ttl', help="Time To Live (Seconds)",
                             required=False)
-        parser.add_argument('--expire', help='SOA Expire (Seconds)',
+        parser.add_argument('--expire', help="SOA Expire (Seconds)",
                             required=False)
-        parser.add_argument('--refresh', help='SOA Refresh (Seconds)',
+        parser.add_argument('--refresh', help="SOA Refresh (Seconds)",
                             required=False)
-        parser.add_argument('--retry', help='SOA Retry (Seconds)',
+        parser.add_argument('--retry', help="SOA Retry (Seconds)",
                             required=False)
         parser.add_argument('--minimum',
-                            help='Negative Caching TTL (Seconds)',
+                            help="Negative Caching TTL (Seconds)",
                             required=False)
-        parser.add_argument('--description', help='Description',
+        parser.add_argument('--serial', help="Serial value",
                             required=False)
-        parser.add_argument('--status', help='Zone Status', required=False)
+        parser.add_argument('--description', help="Description",
+                            required=False)
+        parser.add_argument('--status', help="Zone Status", required=False)
 
         common.add_all_common_options(parser)
 
@@ -102,6 +104,9 @@ class ListZonesCommand(command.Lister):
 
         if parsed_args.minimum is not None:
             criterion["minimum"] = parsed_args.minimum
+
+        if parsed_args.serial is not None:
+            criterion["serial"] = parsed_args.serial
 
         if parsed_args.description is not None:
             criterion["description"] = parsed_args.description
@@ -237,6 +242,7 @@ class SetZoneCommand(command.ShowOne):
         parser.add_argument('--retry', type=int, help="SOA Retry (Seconds)")
         parser.add_argument('--minimum',
                             type=int, help="Negative Caching TTL (Seconds)")
+        parser.add_argument('--serial', type=int, help="Zone Serial")
         description_group = parser.add_mutually_exclusive_group()
         description_group.add_argument('--description', help='Description')
         description_group.add_argument('--no-description', action='store_true')
@@ -271,6 +277,9 @@ class SetZoneCommand(command.ShowOne):
 
         if parsed_args.minimum:
             data['minimum'] = parsed_args.minimum
+
+        if parsed_args.serial:
+            data['serial'] = parsed_args.serial
 
         if parsed_args.no_description:
             data['description'] = None
