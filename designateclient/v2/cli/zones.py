@@ -67,6 +67,8 @@ class ListZonesCommand(command.Lister):
         parser.add_argument('--minimum',
                             help="Negative Caching TTL (Seconds)",
                             required=False)
+        parser.add_argument('--serial', help="Serial value",
+                            required=False)
         parser.add_argument('--description', help="Description",
                             required=False)
         parser.add_argument('--status', help="Zone Status", required=False)
@@ -102,6 +104,9 @@ class ListZonesCommand(command.Lister):
 
         if parsed_args.minimum is not None:
             criterion["minimum"] = parsed_args.minimum
+
+        if parsed_args.serial is not None:
+            criterion["serial"] = parsed_args.serial
 
         if parsed_args.description is not None:
             criterion["description"] = parsed_args.description
@@ -232,6 +237,7 @@ class SetZoneCommand(command.ShowOne):
         parser.add_argument('--retry', type=int, help="SOA Retry (Seconds)")
         parser.add_argument('--minimum',
                             type=int, help="Negative Caching TTL (Seconds)")
+        parser.add_argument('--serial', type=int, help="Zone Serial")
         description_group = parser.add_mutually_exclusive_group()
         description_group.add_argument('--description', help="Description")
         description_group.add_argument('--no-description', action='store_true')
@@ -266,6 +272,9 @@ class SetZoneCommand(command.ShowOne):
 
         if parsed_args.minimum:
             data['minimum'] = parsed_args.minimum
+
+        if parsed_args.serial:
+            data['serial'] = parsed_args.serial
 
         if parsed_args.no_description:
             data['description'] = None
