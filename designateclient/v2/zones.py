@@ -19,7 +19,7 @@ from designateclient.v2 import utils as v2_utils
 
 class ZoneController(V2Controller):
     def create(self, name, type_=None, email=None, description=None, ttl=None,
-               expire=None, retry=None, minimum=None, masters=None,
+               expire=None, retry=None, minimum=None, serial=None, masters=None,
                attributes=None):
         type_ = type_ or "PRIMARY"
 
@@ -40,6 +40,8 @@ class ZoneController(V2Controller):
                 data["retry"] = retry
             if minimum is not None:
                 data["minimum"] = minimum
+            if serial is not None:
+                data["serial"] = serial
         elif type_ == "SECONDARY" and masters:
             data["masters"] = masters
 
