@@ -69,6 +69,8 @@ def set_all_common_headers(client, parsed_args):
             isinstance(parsed_args.edit_managed, bool):
         set_edit_managed(client, parsed_args.edit_managed)
 
-    if parsed_args.sudo_project_id is not None and \
-            isinstance(parsed_args.sudo_project_id, str):
-        set_sudo_project_id(client, parsed_args.sudo_project_id)
+    if parsed_args.sudo_project_id is not None:
+        # the project_id can be unicode...
+        if isinstance(parsed_args.sudo_project_id, str) or \
+            isinstance(parsed_args.sudo_project_id, unicode):
+                set_sudo_project_id(client, parsed_args.sudo_project_id)
