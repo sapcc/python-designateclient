@@ -177,3 +177,24 @@ class ZoneImportsController(V2Controller):
 
     def delete(self, zone_import_id):
         return self._delete('/zones/tasks/imports/%s' % zone_import_id)
+
+
+class SharedZoneController(V2Controller):
+    def create(self, zone, target_project_id):
+        zone_id = v2_utils.resolve_by_name(self.client.zones.list, zone)
+
+        data = {
+            "zone_id": zone_id,
+            "target_project_id": target_project_id
+        }
+
+        return self._post('/zones/share', data=data)
+
+    def list(self):
+        return self._get('/zones/share')
+
+    def delete(self, shared_zone_id):
+        return self._delete('/zones/share/%s' % shared_zone_id)
+
+    def get(self, shared_zone_id):
+        return self._get('/zones/share/%s' % shared_zone_id)
