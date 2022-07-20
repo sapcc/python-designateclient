@@ -91,6 +91,13 @@ class ZoneController(V2Controller):
 
         self.client.session.post(url)
 
+    def move(self, zone, values):
+        zone = v2_utils.resolve_by_name(self.list, zone)
+
+        url = self.build_url('/zones/%s/tasks/move' % zone)
+
+        return self._post(url, data=values)
+
 
 class ZoneTransfersController(V2Controller):
     def create_request(self, zone, target_project_id, description=None):
