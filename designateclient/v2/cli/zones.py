@@ -717,7 +717,10 @@ class ImportZoneCommand(command.ShowOne):
                             required=False,
                             help="Pool ID where zone should be scheduled",
                             type=str)
-
+        parser.add_argument('--force',
+                            required=False,
+                            help="Import existing zone",
+                            type=bool)
         common.add_all_common_options(parser)
 
         return parser

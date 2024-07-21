@@ -391,3 +391,12 @@ class TestZoneImports(v2.APIV2TestCase, v2.CrudMixin):
 
         self.client.zone_imports.delete(ref["id"])
         self.assertRequestBodyIs(None)
+
+    def test_create_import_force(self):
+        zonefile = '$ORIGIN example.com'
+
+        parts = ["zones", "tasks", "imports"]
+        self.stub_url('POST', parts=parts, json=zonefile)
+
+        self.client.zone_imports.create(zonefile, force=True)
+        self.assertRequestBodyIs(body=zonefile)
