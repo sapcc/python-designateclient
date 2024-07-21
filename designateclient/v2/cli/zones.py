@@ -731,7 +731,10 @@ class ImportZoneCommand(command.ShowOne):
                             required=False,
                             help="Pool ID where zone should be scheduled",
                             type=str)
-
+        parser.add_argument('--force',
+                            required=False,
+                            action='store_true',
+                            help="Import existing zone")
         common.add_all_common_options(parser)
 
         return parser
@@ -744,7 +747,12 @@ class ImportZoneCommand(command.ShowOne):
             zone_file_contents = f.read()
 
         pool_id = parsed_args.pool_id
-        data = client.zone_imports.create(zone_file_contents, pool_id=pool_id)
+        force = parsed_args.force
+        data = client.zone_imports.create(
+            zone_file_contents,
+            pool_id=pool_id,
+            force=str(force)
+        )
         _format_zone_import_record(data)
 
         LOG.info('Zone Import %s was created', data['id'])
