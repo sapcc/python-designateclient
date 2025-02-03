@@ -811,7 +811,8 @@ class ListSharedZonesCommand(command.Lister):
 
         common.add_all_common_options(parser)
 
-        parser.add_argument('zone', help='The zone name or ID to share.')
+        parser.add_argument('--zone', help='The zone name or ID to filter on.',
+                            required=False)
 
         parser.add_argument('--target-project-id',
                             help='The target project ID to filter on.',

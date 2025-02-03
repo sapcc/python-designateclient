@@ -189,9 +189,12 @@ class ZoneShareController(V2Controller):
 
         return self._post(f'/zones/{zone_id}/shares', data=data)
 
-    def list(self, zone, criterion=None, marker=None, limit=None):
-        zone_id = v2_utils.resolve_by_name(self.client.zones.list, zone)
-        url = self.build_url(f'/zones/{zone_id}/shares',
+    def list(self, zone=None, criterion=None, marker=None, limit=None):
+        if zone:
+            zone_id = v2_utils.resolve_by_name(self.client.zones.list, zone)
+            criterion['zone_id'] = zone_id
+
+        url = self.build_url('/zones/shares',
                              criterion, marker, limit)
 
         return self._get(url, response_key='shared_zones')
