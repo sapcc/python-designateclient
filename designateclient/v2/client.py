@@ -13,6 +13,9 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+
+import json
+
 from keystoneauth1 import adapter
 
 from designateclient import exceptions
@@ -53,6 +56,15 @@ class DesignateAdapter(adapter.LegacyJsonAdapter):
         self.hard_delete = kwargs.pop('hard_delete', False)
         self.sudo_project_id = kwargs.pop('sudo_project_id', None)
         super(self.__class__, self).__init__(*args, **kwargs)
+
+    def _extract_rate_limit_error(self, body):
+        try:
+            resp_dict = json.loads(body)
+            if "error" in resp_dict:
+                return resp_dict['error']
+        except (TypeError, KeyError):
+            return body
+        return body
 
     def request(self, *args, **kwargs):
         kwargs.setdefault('raise_exc', False)
@@ -111,6 +123,10 @@ class DesignateAdapter(adapter.LegacyJsonAdapter):
             raise exceptions.Conflict(**response_payload)
         elif response.status_code == 413:
             raise exceptions.OverQuota(**response_payload)
+        elif response.status_code == 429:
+            if isinstance(body, str):
+                response_payload = self._extract_rate_limit_error(body)
+            raise exceptions.TooManyRequests(**response_payload)
         elif response.status_code >= 500:
             raise exceptions.Unknown(**response_payload)
         return response, body

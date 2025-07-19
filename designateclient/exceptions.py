@@ -82,3 +82,7 @@ class NotFound(RemoteError):
 
 class OverQuota(RemoteError):
     pass
+
+
+class TooManyRequests(RemoteError):
+    pass
