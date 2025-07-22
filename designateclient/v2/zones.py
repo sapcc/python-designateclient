@@ -207,6 +207,7 @@ class ZoneShareController(V2Controller):
     def list(self, zone=None, criterion=None, marker=None, limit=None):
         if zone:
             zone_id = v2_utils.resolve_by_name(self.client.zones.list, zone)
+            criterion = dict()
             criterion['zone_id'] = zone_id
 
         url = self.build_url('/zones/shares',

@@ -455,13 +455,13 @@ class TestZoneShared(v2.APIV2TestCase, v2.CrudMixin):
             self.new_ref()
         ]
 
-        parts = ["zones", self.zone_id, "shares"]
+        parts = ["zones", "shares"]
         self.stub_entity('GET', parts=parts, entity={"shared_zones": items})
 
         listed = self.client.zone_share.list(self.zone_id)
 
         self.assertList(items, listed)
-        self.assertQueryStringIs("")
+        self.assertQueryStringIs(f"zone_id={self.zone_id}")
 
     def test_delete_zone_share(self):
         ref = self.new_ref()
