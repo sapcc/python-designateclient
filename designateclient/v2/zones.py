@@ -182,7 +182,7 @@ class ZoneImportsController(V2Controller):
         if pool_id:
             headers['X-Designate-Pool-ID'] = pool_id
         if force:
-            headers['X-Designate-Force-Import'] = force
+            headers['X-Designate-Force-Import'] = str(force)
         return self._post('/zones/tasks/imports', data=zone_file_contents,
                           headers=headers)
 
