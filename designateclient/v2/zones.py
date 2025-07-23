@@ -182,7 +182,7 @@ class ZoneImportsController(V2Controller):
         if pool_id:
             headers['X-Designate-Pool-ID'] = pool_id
         if force:
-            headers['X-Designate-Force-Import'] = force
+            headers['X-Designate-Force-Import'] = str(force)
         return self._post('/zones/tasks/imports', data=zone_file_contents,
                           headers=headers)
 
@@ -207,6 +207,7 @@ class ZoneShareController(V2Controller):
     def list(self, zone=None, criterion=None, marker=None, limit=None):
         if zone:
             zone_id = v2_utils.resolve_by_name(self.client.zones.list, zone)
+            criterion = dict()
             criterion['zone_id'] = zone_id
 
         url = self.build_url('/zones/shares',

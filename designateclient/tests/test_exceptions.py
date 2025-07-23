@@ -61,3 +61,18 @@ class RemoteErrorTestCase(base.TestCase):
         self.response_dict['unknown'] = 'fake'
         remote_err = exceptions.RemoteError(**self.response_dict)
         self.assertEqual(expected_msg, remote_err.message)
+
+
+class TooManyErrorsTestCase(base.TestCase):
+    response_dict = {
+        'message': 'Too Many Requests',
+        'status': '429 Too Many Requests',
+        'code': 429,
+        'request_id': 1234
+    }
+
+    def test_get_error_message(self):
+        expected_msg = 'Too Many Requests'
+        self.response_dict['message'] = expected_msg
+        remote_err = exceptions.TooManyRequests(**self.response_dict)
+        self.assertEqual(expected_msg, remote_err.message)
