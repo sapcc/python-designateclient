@@ -23,6 +23,7 @@ from designateclient.v2.blacklists import BlacklistController
 from designateclient.v2.limits import LimitController
 from designateclient.v2.nameservers import NameServerController
 from designateclient.v2.pools import PoolController
+from designateclient.v2.pools import PoolShareController
 from designateclient.v2.quotas import QuotasController
 from designateclient.v2.recordsets import RecordSetController
 from designateclient.v2.reverse import FloatingIPController
@@ -170,5 +171,6 @@ class Client:
         self.zone_imports = ZoneImportsController(self)
         self.zone_share = ZoneShareController(self)
         self.pools = PoolController(self)
+        self.pool_share = PoolShareController(self)
         self.quotas = QuotasController(self)
         self.tsigkeys = TSIGKeysController(self)
